@@ -1,9 +1,5 @@
 # **Module 1 – Introduction à AWS pour les développeurs**
 
-Durée estimée : 3h à 3h30 (matinée du Jour 1)
-
----
-
 ## **Objectifs pédagogiques**
 
 À l’issue de ce module, les participants seront capables de :
