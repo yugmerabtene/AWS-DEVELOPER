@@ -2,8 +2,6 @@
 
 ---
 
-# **TP AWS – Introduction aux Services Cloud avec AWS CLI, SDK, Lambda, S3, DynamoDB, API Gateway**
-
 ## Organisation
 
 * **Public cible** : développeurs / DevOps débutants ou intermédiaires
