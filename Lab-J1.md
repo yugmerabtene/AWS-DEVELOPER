@@ -1,64 +1,147 @@
+# **LAB AWS – Introduction aux Services Cloud avec AWS CLI, SDK, Lambda, S3, DynamoDB, API Gateway**
+
+---
+
 # **TP AWS – Introduction aux Services Cloud avec AWS CLI, SDK, Lambda, S3, DynamoDB, API Gateway**
 
-## Organisation :
+## Organisation
 
 * **Public cible** : développeurs / DevOps débutants ou intermédiaires
-* **Prérequis** : un compte AWS, AWS CLI installée, Python ou Node.js installé selon le lab
+* **Prérequis** : un compte AWS avec accès administrateur, AWS CLI installée, Python ou Node.js installé selon les besoins
 * **Durée estimée** : 1 après-midi par lab, 1 à 2 après-midis pour le projet final
 
 ---
 
-## **Lab 1 – Création d’un utilisateur IAM et configuration AWS CLI**
+## **Lab 1 – Création d’un utilisateur IAM et configuration de l’AWS CLI**
 
-### Objectifs :
+### Objectifs pédagogiques
 
-* Créer un utilisateur IAM avec des permissions restreintes.
-* Générer des credentials d’accès.
-* Configurer AWS CLI.
-* Tester les premières commandes AWS.
+* Comprendre la création d'un utilisateur IAM avec des permissions spécifiques.
+* Générer et sécuriser des credentials d’accès programmatique.
+* Configurer AWS CLI localement.
+* Tester les appels à AWS via la CLI.
 
-### Étapes :
+---
 
-1. **Connexion à AWS Console** avec un compte administrateur.
+### Étapes détaillées
 
-2. **Création de l’utilisateur IAM** :
+#### 1. Connexion à la console AWS
 
-   * Accéder à IAM → Utilisateurs → Ajouter un utilisateur.
-   * Nom : `dev-user`.
-   * Accès programmatique : coché.
-   * Groupe : `S3FullAccessGroup`, avec la politique `AmazonS3FullAccess`.
+* Connectez-vous à [https://console.aws.amazon.com](https://console.aws.amazon.com) avec un **utilisateur disposant de droits administrateur** (ex. `root` ou `admin` IAM).
 
-3. **Télécharger les credentials `.csv`** contenant :
+---
 
-   * Access Key ID
-   * Secret Access Key
+#### 2. Création de l’utilisateur IAM
 
-4. **Installation de l’AWS CLI** :
-https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-   * Vérification :
+1. Accédez au service **IAM**.
+2. Dans le menu de gauche, cliquez sur **Utilisateurs**.
+3. Cliquez sur **Ajouter un utilisateur**.
+4. Paramètres de l’utilisateur :
 
-     ```bash
-     aws --version
-     ```
+   * **Nom de l’utilisateur** : `dev-user` (ou `yug` si personnalisé)
+   * **Type d’accès** : cochez **Accès programmatique**
+5. Cliquez sur **Suivant**.
 
-5. **Configuration CLI** :
+---
 
-   ```bash
-   aws configure
-   ```
+#### 3. Attribution des permissions
 
-   Saisir :
+1. Choisissez **Ajouter l’utilisateur à un groupe**.
+2. Créez un groupe appelé `S3FullAccessGroup`.
+3. Attachez la politique **AmazonS3FullAccess** à ce groupe.
+4. Validez.
 
-   * Access Key
-   * Secret Key
-   * Région (ex : `eu-west-3`)
-   * Format de sortie (ex : `json`)
+---
 
-6. **Test CLI** :
+#### 4. Création de la clé d’accès
 
-   ```bash
-   aws sts get-caller-identity
-   ```
+1. Sur la page de confirmation, cliquez sur **Afficher les clés d’accès**.
+2. Téléchargez le fichier `.csv` contenant :
+
+   * `Access Key ID`
+   * `Secret Access Key`
+
+**Important** : Ce fichier ne pourra **plus être récupéré** une fois quitté.
+Garde-le en lieu sûr pour la configuration CLI.
+
+---
+
+#### 5. Installer AWS CLI (si non installé)
+
+Lien officiel :
+[https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+Vérifier l'installation :
+
+```bash
+aws --version
+```
+
+---
+
+#### 6. Configuration d’AWS CLI avec les credentials
+
+Dans le terminal ou `cmd.exe` :
+
+```bash
+aws configure
+```
+
+Saisir les valeurs du fichier `.csv` :
+
+* **AWS Access Key ID** : (ex : `AKIAIOSFODNN7EXAMPLE`)
+* **AWS Secret Access Key** : (ex : `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`)
+* **Default region name** : `eu-west-3`
+* **Default output format** : `json`
+
+---
+
+#### 7. Tester la configuration avec une commande AWS
+
+```bash
+aws sts get-caller-identity
+```
+
+Sortie attendue :
+
+```json
+{
+  "UserId": "AIDXXXXXXXXXXXXXX",
+  "Account": "123456789012",
+  "Arn": "arn:aws:iam::123456789012:user/dev-user"
+}
+```
+
+Si tu obtiens une erreur comme :
+
+```
+An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity operation: The security token included in the request is invalid.
+```
+
+> Cela signifie que les **clés d’accès saisies sont incorrectes ou expirées** :
+> Recommence depuis l’étape 4 pour générer une nouvelle paire.
+
+---
+
+### Vérifications complémentaires
+
+* Vérifie que le fichier suivant existe :
+  `%USERPROFILE%\.aws\credentials`
+
+* Si besoin, supprime manuellement les anciennes entrées pour réinitialiser :
+
+  ```bash
+  del %USERPROFILE%\.aws\credentials
+  del %USERPROFILE%\.aws\config
+  ```
+
+---
+
+### Résultat attendu
+
+* Utilisateur IAM actif avec accès programmatique
+* AWS CLI opérationnelle avec `aws sts get-caller-identity` fonctionnel
+
 
 ---
 
