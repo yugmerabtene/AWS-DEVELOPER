@@ -1,11 +1,9 @@
 # **LAB AWS – Introduction aux Services Cloud avec AWS CLI, SDK, Lambda, S3, DynamoDB, API Gateway**
 
----
-
 ## Organisation
 
 * **Public cible** : développeurs / DevOps débutants ou intermédiaires
-* **Prérequis** : un compte AWS avec accès administrateur, AWS CLI installée, Python ou Node.js installé selon les besoins
+* **Prérequis** : un compte AWS avec droits admin, AWS CLI installée, Python ou Node.js installé selon les labs
 * **Durée estimée** : 1 après-midi par lab, 1 à 2 après-midis pour le projet final
 
 ---
@@ -14,62 +12,66 @@
 
 ### Objectifs pédagogiques
 
-* Comprendre la création d'un utilisateur IAM avec des permissions spécifiques.
-* Générer et sécuriser des credentials d’accès programmatique.
+* Créer un utilisateur IAM avec des permissions restreintes et accès programmatique.
+* Générer une paire de clés d’accès (Access Key ID + Secret Key).
 * Configurer AWS CLI localement.
-* Tester les appels à AWS via la CLI.
+* Vérifier la connexion en appelant un service AWS via la CLI.
 
 ---
 
 ### Étapes détaillées
 
-#### 1. Connexion à la console AWS
+### 1. Connexion à la Console AWS
 
-* Connectez-vous à [https://console.aws.amazon.com](https://console.aws.amazon.com) avec un **utilisateur disposant de droits administrateur** (ex. `root` ou `admin` IAM).
-
----
-
-#### 2. Création de l’utilisateur IAM
-
-1. Accédez au service **IAM**.
-2. Dans le menu de gauche, cliquez sur **Utilisateurs**.
-3. Cliquez sur **Ajouter un utilisateur**.
-4. Paramètres de l’utilisateur :
-
-   * **Nom de l’utilisateur** : `dev-user` (ou `yug` si personnalisé)
-   * **Type d’accès** : cochez **Accès programmatique**
-5. Cliquez sur **Suivant**.
+* Ouvre ton navigateur et connecte-toi à [https://console.aws.amazon.com](https://console.aws.amazon.com) avec un **compte administrateur**.
 
 ---
 
-#### 3. Attribution des permissions
+### 2. Création de l’utilisateur IAM
 
-1. Choisissez **Ajouter l’utilisateur à un groupe**.
-2. Créez un groupe appelé `S3FullAccessGroup`.
-3. Attachez la politique **AmazonS3FullAccess** à ce groupe.
-4. Validez.
+1. Accède au service **IAM**.
+2. Dans le menu gauche, clique sur **Users (Utilisateurs)**.
+3. Clique sur le bouton **\[Create user]**.
+4. Renseigne les informations :
 
----
-
-#### 4. Création de la clé d’accès
-
-1. Sur la page de confirmation, cliquez sur **Afficher les clés d’accès**.
-2. Téléchargez le fichier `.csv` contenant :
-
-   * `Access Key ID`
-   * `Secret Access Key`
-
-**Important** : Ce fichier ne pourra **plus être récupéré** une fois quitté.
-Garde-le en lieu sûr pour la configuration CLI.
+   * **User name** : `dev-user` (ou `yug`)
+   * **Access type** : coche **Programmatic access**
+5. Clique sur **Next: Permissions**.
 
 ---
 
-#### 5. Installer AWS CLI (si non installé)
+### 3. Attribution des permissions
+
+1. Sélectionne **Add user to group**.
+2. Crée un groupe nommé `S3FullAccessGroup`.
+3. Attache la politique **AmazonS3FullAccess** à ce groupe.
+4. Clique sur **Create group**, puis **Next** jusqu'à **Create user**.
+
+---
+
+### 4. Création d'une Access Key (manuelle après création)
+
+Si tu as déjà créé l’utilisateur sans générer de clé d’accès, voici la procédure à suivre :
+
+1. Va dans **IAM > Users > yug** (ou `dev-user`).
+2. Clique sur l'utilisateur pour ouvrir sa fiche.
+3. Accède à l’onglet **Security credentials**.
+4. Descends jusqu’à la section **Access keys**.
+5. Clique sur **Create access key**.
+6. À l’étape d’usage prévu, choisis **Command Line Interface (CLI)**.
+7. Clique sur **Next**, puis sur **Create access key**.
+8. Une fois créée, clique sur **Download .csv** pour la sauvegarder localement.
+
+⚠️ **Ne perds pas le fichier `.csv`**, tu ne pourras **plus voir la Secret Key** après cette étape.
+
+---
+
+### 5. Installer AWS CLI (si ce n’est pas déjà fait)
 
 Lien officiel :
-[https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+[https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 
-Vérifier l'installation :
+Vérifie l'installation :
 
 ```bash
 aws --version
@@ -77,15 +79,15 @@ aws --version
 
 ---
 
-#### 6. Configuration d’AWS CLI avec les credentials
+### 6. Configurer AWS CLI
 
-Dans le terminal ou `cmd.exe` :
+Dans un terminal (`cmd.exe`, PowerShell ou bash), exécute :
 
 ```bash
 aws configure
 ```
 
-Saisir les valeurs du fichier `.csv` :
+Entre les valeurs depuis ton fichier `.csv` :
 
 * **AWS Access Key ID** : (ex : `AKIAIOSFODNN7EXAMPLE`)
 * **AWS Secret Access Key** : (ex : `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`)
@@ -94,51 +96,34 @@ Saisir les valeurs du fichier `.csv` :
 
 ---
 
-#### 7. Tester la configuration avec une commande AWS
+### 7. Tester la configuration
+
+Commande :
 
 ```bash
 aws sts get-caller-identity
 ```
 
-Sortie attendue :
+Résultat attendu :
 
 ```json
 {
   "UserId": "AIDXXXXXXXXXXXXXX",
   "Account": "123456789012",
-  "Arn": "arn:aws:iam::123456789012:user/dev-user"
+  "Arn": "arn:aws:iam::123456789012:user/yug"
 }
 ```
 
-Si tu obtiens une erreur comme :
-
-```
-An error occurred (InvalidClientTokenId) when calling the GetCallerIdentity operation: The security token included in the request is invalid.
-```
-
-> Cela signifie que les **clés d’accès saisies sont incorrectes ou expirées** :
-> Recommence depuis l’étape 4 pour générer une nouvelle paire.
-
 ---
 
-### Vérifications complémentaires
+### En cas d’erreur :
 
-* Vérifie que le fichier suivant existe :
-  `%USERPROFILE%\.aws\credentials`
+> `InvalidClientTokenId` ou `The security token included in the request is invalid`
 
-* Si besoin, supprime manuellement les anciennes entrées pour réinitialiser :
+Cela signifie que :
 
-  ```bash
-  del %USERPROFILE%\.aws\credentials
-  del %USERPROFILE%\.aws\config
-  ```
-
----
-
-### Résultat attendu
-
-* Utilisateur IAM actif avec accès programmatique
-* AWS CLI opérationnelle avec `aws sts get-caller-identity` fonctionnel
+* Les clés saisies sont incorrectes ou expirées
+* Tu n’as pas encore généré de Access Key pour l’utilisateur IAM
 
 
 ---
