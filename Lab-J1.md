@@ -34,7 +34,7 @@
    * Secret Access Key
 
 4. **Installation de l’AWS CLI** :
-
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
    * Vérification :
 
      ```bash
