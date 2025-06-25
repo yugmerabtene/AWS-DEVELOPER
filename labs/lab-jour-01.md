@@ -6,7 +6,7 @@
 * Générer une paire de clés pour AWS CLI
 * Tester la connexion à AWS en ligne de commande
 
-## Architecture (schéma logique ASCII)
+## Architecture
 
 ```
 +-----------------+       +-----------------------+
@@ -46,7 +46,8 @@
 
 * Associer l’utilisateur `dev-user` à ce groupe
 
-### 3. Générer une Access Key
+### 3. Cliquer sur users et sur votre utilisateur et Create access Key
+* Command Line Interface (CLI)
 
 * Après création → télécharger le fichier `.csv`
 * ⚠️ Obligatoire pour configurer la CLI
