@@ -109,7 +109,7 @@ Contenu du livrable :
 
 ---
 
-**Projet final – Application de gestion de messages Serverless avec API Gateway, Lambda, SQS, SNS, DynamoDB et Parameter Store**
+**Projet-02 – Application de gestion de messages Serverless avec API Gateway, Lambda, SQS, SNS, DynamoDB et Parameter Store**
 
 Objectif :
 Concevoir une API de gestion de messages totalement serverless, intégrant tous les composants des Labs 5 à 8, avec automatisation par CloudFormation.
